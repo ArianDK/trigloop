@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="TrigLoop is a fast, gamified way to master the unit circle." />
+  <title>TrigLoop — Master the Unit Circle</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home" data-route="home" aria-label="TrigLoop home">
+      <span class="brand-mark" aria-hidden="true">
+        <span class="brand-orbit"></span>
+        <span class="brand-dot"></span>
+      </span>
+      <span>TrigLoop</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <button class="nav-link active" data-route="home">Home</button>
+      <button class="nav-link" data-route="learn">Learn</button>
+      <button class="nav-link" data-route="play">Play</button>
+      <button class="nav-link" data-route="progress">Progress</button>
+    </nav>
+
+    <div class="header-actions">
+      <button id="soundToggle" class="icon-btn" type="button" aria-label="Toggle sound" title="Toggle sound">
+        <span class="sound-on">♪</span>
+      </button>
+      <div class="xp-pill" title="Experience points">
+        <span>XP</span>
+        <strong id="headerXp">0</strong>
+      </div>
+    </div>
+  </header>
+
+  <main id="app">
+    <section class="view active" id="view-home" data-view="home">
+      <div class="hero">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span class="live-dot"></span> Unit circle training, reimagined</div>
+          <h1>Make the circle<br><span>click.</span></h1>
+          <p>
+            Learn the unit circle visually, then lock it in with quick games,
+            streaks, XP, and instant feedback.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" data-route="play">
+              Start playing <span aria-hidden="true">→</span>
+            </button>
+            <button class="btn btn-secondary" data-route="learn">Explore the circle</button>
+          </div>
+          <div class="hero-note">
+            <span>◉</span>
+            <span>No account. No install. Progress stays in your browser.</span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal delay-1" aria-label="Animated unit circle preview">
+          <div class="orbit-card">
+            <div class="orbit-glow"></div>
+            <svg class="hero-circle" viewBox="-145 -145 290 290" role="img" aria-label="Stylized unit circle">
+              <circle class="hero-ring-outer" cx="0" cy="0" r="116"></circle>
+              <circle class="hero-ring" cx="0" cy="0" r="94"></circle>
+              <line class="axis" x1="-118" y1="0" x2="118" y2="0"></line>
+              <line class="axis" x1="0" y1="-118" x2="0" y2="118"></line>
+              <path class="hero-arc" d="M 94 0 A 94 94 0 0 0 47 -81.4"></path>
+              <line class="hero-ray" x1="0" y1="0" x2="47" y2="-81.4"></line>
+              <line class="projection projection-x" x1="47" y1="-81.4" x2="47" y2="0"></line>
+              <line class="projection projection-y" x1="0" y1="-81.4" x2="47" y2="-81.4"></line>
+              <circle class="hero-point" cx="47" cy="-81.4" r="7"></circle>
+              <circle class="center-point" cx="0" cy="0" r="4"></circle>
+            </svg>
+            <div class="floating-card value-card value-card-a">
+              <small>ANGLE</small>
+              <strong>π/3</strong>
+            </div>
+            <div class="floating-card value-card value-card-b">
+              <small>(cos θ, sin θ)</small>
+              <strong>(1/2, √3/2)</strong>
+            </div>
+            <div class="floating-card combo-card">
+              <span>COMBO</span>
+              <strong>x4</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-shell home-section reveal delay-2">
+        <div class="section-heading">
+          <div>
+            <span class="kicker">Choose your challenge</span>
+            <h2>Four ways to train</h2>
+          </div>
+          <button class="text-link" data-route="play">View all modes →</button>
+        </div>
+        <div class="mode-grid" id="homeModeGrid"></div>
+      </section>
+
+      <section class="section-shell concept-strip reveal">
+        <div class="concept-copy">
+          <span class="kicker">One rule unlocks the circle</span>
+          <h2>(x, y) = (cos θ, sin θ)</h2>
+          <p>
+            Once you see coordinates as cosine and sine, the unit circle becomes
+            a pattern instead of a page to memorize.
+          </p>
+          <button class="btn btn-secondary" data-route="learn">Show me the pattern</button>
+        </div>
+        <div class="pattern-stack" aria-hidden="true">
+          <div class="pattern-row">
+            <span>30°</span><span>π/6</span><span>(√3/2, 1/2)</span>
+          </div>
+          <div class="pattern-row active">
+            <span>45°</span><span>π/4</span><span>(√2/2, √2/2)</span>
+          </div>
+          <div class="pattern-row">
+            <span>60°</span><span>π/3</span><span>(1/2, √3/2)</span>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-learn" data-view="learn">
+      <div class="page-title reveal">
+        <div>
+          <span class="kicker">Explore</span>
+          <h1>Learn the pattern.</h1>
+          <p>Tap any special angle and watch the circle explain itself.</p>
+        </div>
+        <div class="segmented" role="group" aria-label="Angle label format">
+          <button class="segment active" data-format="rad">Radians</button>
+          <button class="segment" data-format="deg">Degrees</button>
+        </div>
+      </div>
+
+      <div class="learn-layout">
+        <section class="glass-panel circle-panel reveal">
+          <div class="panel-topline">
+            <span>INTERACTIVE CIRCLE</span>
+            <span class="status-dot"><i></i> LIVE</span>
+          </div>
+          <div class="circle-stage">
+            <svg id="learnCircle" class="unit-circle" viewBox="-170 -170 340 340" role="img" aria-label="Interactive unit circle">
+              <defs>
+                <radialGradient id="pointGlow">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity=".9"></stop>
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop>
+                </radialGradient>
+              </defs>
+              <circle class="uc-halo" cx="0" cy="0" r="126"></circle>
+              <circle class="uc-ring" cx="0" cy="0" r="112"></circle>
+              <line class="uc-axis" x1="-138" y1="0" x2="138" y2="0"></line>
+              <line class="uc-axis" x1="0" y1="-138" x2="0" y2="138"></line>
+              <text class="axis-label" x="141" y="-7">x</text>
+              <text class="axis-label" x="7" y="-143">y</text>
+              <path id="learnArc" class="uc-arc"></path>
+              <line id="learnProjectionX" class="uc-projection" x1="0" y1="0" x2="0" y2="0"></line>
+              <line id="learnProjectionY" class="uc-projection alt" x1="0" y1="0" x2="0" y2="0"></line>
+              <line id="learnNeedle" class="uc-needle" x1="0" y1="0" x2="112" y2="0"></line>
+              <g id="learnPoints"></g>
+              <circle class="uc-center" cx="0" cy="0" r="4"></circle>
+            </svg>
+          </div>
+          <div class="angle-chip-row" id="angleChipRow"></div>
+        </section>
+
+        <aside class="glass-panel facts-panel reveal delay-1">
+          <div class="fact-header">
+            <span class="mini-label">CURRENT ANGLE</span>
+            <div class="angle-pair">
+              <strong id="factDegrees">45°</strong>
+              <span id="factRadians">π/4</span>
+            </div>
+          </div>
+          <div class="coordinate-hero">
+            <span>POINT ON THE CIRCLE</span>
+            <strong id="factCoordinate">(√2/2, √2/2)</strong>
+            <small>x = cos θ &nbsp; · &nbsp; y = sin θ</small>
+          </div>
+
+          <div class="fact-grid">
+            <div class="fact-box">
+              <span>cos θ</span>
+              <strong id="factCos">√2/2</strong>
+            </div>
+            <div class="fact-box">
+              <span>sin θ</span>
+              <strong id="factSin">√2/2</strong>
+            </div>
+            <div class="fact-box">
+              <span>tan θ</span>
+              <strong id="factTan">1</strong>
+            </div>
+            <div class="fact-box">
+              <span>quadrant</span>
+              <strong id="factQuadrant">I</strong>
+            </div>
+          </div>
+
+          <div class="reference-card">
+            <div>
+              <span>Reference angle</span>
+              <strong id="factReference">45°</strong>
+            </div>
+            <div class="reference-icon">∠</div>
+          </div>
+
+          <div class="memory-tip" id="memoryTip">
+            <span class="tip-icon">✦</span>
+            <p><strong>Pattern tip:</strong> At 45°, sine and cosine match because the reference triangle is isosceles.</p>
+          </div>
+        </aside>
+      </div>
+
+      <section class="section-shell pattern-guide reveal">
+        <div class="section-heading">
+          <div>
+            <span class="kicker">Fast memory trick</span>
+            <h2>Learn one quadrant. Mirror the signs.</h2>
+          </div>
+        </div>
+        <div class="memory-grid">
+          <article>
+            <span class="memory-number">01</span>
+            <h3>Know 30°, 45°, 60°</h3>
+            <p>The first-quadrant values are the only magnitude patterns you really need to memorize.</p>
+          </article>
+          <article>
+            <span class="memory-number">02</span>
+            <h3>Use √n / 2</h3>
+            <p>For sine from 0° → 90°: √0/2, √1/2, √2/2, √3/2, √4/2.</p>
+          </article>
+          <article>
+            <span class="memory-number">03</span>
+            <h3>Cosine runs backward</h3>
+            <p>Cosine uses the same sequence in reverse. Then quadrant signs do the rest.</p>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-play" data-view="play">
+      <div class="page-title reveal">
+        <div>
+          <span class="kicker">Game room</span>
+          <h1>Train. Streak. Master.</h1>
+          <p>Pick a mode and turn recall into reflex.</p>
+        </div>
+        <div class="level-badge">
+          <span>LEVEL</span>
+          <strong id="playLevel">1</strong>
+        </div>
+      </div>
+
+      <div id="modeSelect" class="mode-select-grid reveal"></div>
+
+      <section id="gameArena" class="game-arena hidden" aria-live="polite">
+        <div class="game-topbar">
+          <button id="exitGame" class="icon-text-btn">← Exit</button>
+          <div class="game-mode-title">
+            <span id="gameModeEyebrow">MODE</span>
+            <strong id="gameModeName">Angle Dash</strong>
+          </div>
+          <div class="game-hud">
+            <div><span>SCORE</span><strong id="gameScore">0</strong></div>
+            <div><span>STREAK</span><strong id="gameStreak">0</strong></div>
+            <div id="timerHud"><span>TIME</span><strong id="gameTimer">60</strong></div>
+          </div>
+        </div>
+
+        <div class="game-progress-track">
+          <div id="gameProgressBar" class="game-progress-bar"></div>
+        </div>
+
+        <div class="game-shell">
+          <div class="question-panel">
+            <div class="question-meta">
+              <span id="questionCount">QUESTION 1</span>
+              <span id="questionBadge">RADIANS</span>
+            </div>
+            <h2 id="questionText">Tap the point for π/3</h2>
+            <p id="questionSubtext">Choose the correct position on the unit circle.</p>
+            <div id="feedbackLine" class="feedback-line" aria-live="assertive"></div>
+          </div>
+
+          <div id="gameInteraction" class="game-interaction">
+            <div id="gameCircleWrap" class="game-circle-wrap">
+              <svg id="gameCircle" class="unit-circle game-circle" viewBox="-160 -160 320 320" role="img" aria-label="Game unit circle">
+                <circle class="uc-halo" cx="0" cy="0" r="124"></circle>
+                <circle class="uc-ring" cx="0" cy="0" r="110"></circle>
+                <line class="uc-axis" x1="-134" y1="0" x2="134" y2="0"></line>
+                <line class="uc-axis" x1="0" y1="-134" x2="0" y2="134"></line>
+                <line id="gameNeedle" class="uc-needle muted" x1="0" y1="0" x2="110" y2="0"></line>
+                <g id="gamePoints"></g>
+                <circle class="uc-center" cx="0" cy="0" r="4"></circle>
+              </svg>
+            </div>
+            <div id="answerGrid" class="answer-grid hidden"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-progress" data-view="progress">
+      <div class="page-title reveal">
+        <div>
+          <span class="kicker">Your progress</span>
+          <h1>Small reps add up.</h1>
+          <p>Your stats are stored only in this browser using localStorage.</p>
+        </div>
+        <button id="resetProgress" class="btn btn-ghost-danger">Reset progress</button>
+      </div>
+
+      <div class="stats-grid reveal">
+        <article class="stat-card stat-card-featured">
+          <span>Total XP</span>
+          <strong id="progressXp">0</strong>
+          <small id="progressLevelText">Level 1 · 0 XP to next level</small>
+          <div class="xp-track"><div id="xpTrackFill"></div></div>
+        </article>
+        <article class="stat-card">
+          <span>Games played</span>
+          <strong id="progressGames">0</strong>
+          <small>Every run counts.</small>
+        </article>
+        <article class="stat-card">
+          <span>Best streak</span>
+          <strong id="progressStreak">0</strong>
+          <small>Keep the combo alive.</small>
+        </article>
+        <article class="stat-card">
+          <span>Accuracy</span>
+          <strong id="progressAccuracy">—</strong>
+          <small>Across all answered questions.</small>
+        </article>
+      </div>
+
+      <section class="section-shell reveal">
+        <div class="section-heading">
+          <div>
+            <span class="kicker">Personal bests</span>
+            <h2>Beat your scores</h2>
+          </div>
+        </div>
+        <div class="best-grid" id="bestScoreGrid"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+
+  <div id="resultModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="result-modal">
+      <button id="closeModal" class="modal-close" aria-label="Close results">×</button>
+      <div class="result-orbit" aria-hidden="true"><span></span></div>
+      <span class="kicker">Run complete</span>
+      <h2 id="resultTitle">Nice work!</h2>
+      <p id="resultSubtitle">Your circle sense is getting sharper.</p>
+      <div class="result-stats">
+        <div><span>SCORE</span><strong id="resultScore">0</strong></div>
+        <div><span>ACCURACY</span><strong id="resultAccuracy">0%</strong></div>
+        <div><span>XP EARNED</span><strong id="resultXp">+0</strong></div>
+      </div>
+      <div class="modal-actions">
+        <button id="playAgain" class="btn btn-primary">Play again</button>
+        <button id="backToModes" class="btn btn-secondary">Choose mode</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="brand compact">
+      <span class="brand-mark" aria-hidden="true"><span class="brand-orbit"></span><span class="brand-dot"></span></span>
+      <span>TrigLoop</span>
+    </div>
+    <p>Built for students who would rather play one more round than memorize one more chart.</p>
+    <span>Static · GitHub Pages ready</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
